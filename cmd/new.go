@@ -31,8 +31,13 @@ func newContainer() {
 	// 检查指定版本
 	var target string
 	if inputVersion == "" {
-		target = lib.GetLatestVersionString()
-		fmt.Printf("No version specified, using the latest version %s\n", target)
+		if t, err := lib.GetLatestVersionString(); err != nil {
+			fmt.Printf("Failed to get latest version: %s\n", err)
+			os.Exit(1)
+		} else {
+			target = t
+			fmt.Printf("No version specified, using the latest version %s\n", target)
+		}
 	} else {
 		isValid := false
 		for _, v := range lib.GetVersionsString() {

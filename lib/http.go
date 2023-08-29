@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"errors"
 	"log"
 	"time"
 
@@ -51,8 +52,12 @@ func GetVersionsString() []string {
 	return versions
 }
 
-func GetLatestVersionString() string {
-	return GetVersionsString()[0]
+func GetLatestVersionString() (string, error) {
+	list := GetVersionsString()
+	if len(list) == 0 {
+		return "", errors.New("no versions found")
+	}
+	return GetVersionsString()[0], nil
 }
 
 func downloadFile(url string, path string) {
