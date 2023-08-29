@@ -9,10 +9,6 @@ import (
 	"sub-store-manager-cli/vars"
 )
 
-var inputVersion = ""
-var inputName = ""
-var inputPort = ""
-
 var newCmd = &cobra.Command{
 	Use:   "new",
 	Short: "create a new sub-store docker container",

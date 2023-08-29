@@ -34,7 +34,8 @@ func listAllSSMContainer() {
 	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, container := range ssmList {
-		tbl.AddRow(container.Id, container.Version, container.Port, container.Status, container.Name)
+		portStr := fmt.Sprintf("%s: %s->%s", container.NetworkType, container.HostPort, container.Port)
+		tbl.AddRow(container.Id, container.Version, portStr, container.Status, container.Name)
 	}
 
 	tbl.Print()

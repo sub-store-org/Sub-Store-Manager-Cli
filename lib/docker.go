@@ -44,11 +44,13 @@ func initDockerClient() {
 }
 
 type SSMContainer struct {
-	Id      string
-	Name    string
-	Port    string
-	Version string
-	Status  string
+	Id          string
+	Name        string
+	HostPort    string
+	Port        string
+	NetworkType string
+	Version     string
+	Status      string
 }
 
 func GetSSMContainers() []SSMContainer {
@@ -66,25 +68,22 @@ func GetSSMContainers() []SSMContainer {
 		if len(imageNameParts) > 1 {
 			n, v := imageNameParts[0], imageNameParts[1]
 			if n == vars.DockerName {
-				status := strings.Split(c.Status, " ")[0]
-				var port string
-				if status == "Up" {
-					port = fmt.Sprintf("%s: %s->%s",
-						c.Ports[0].Type,
-						strconv.Itoa(int(c.Ports[0].PublicPort)),
-						strconv.Itoa(int(c.Ports[0].PrivatePort)),
-					)
-				} else {
-					port = "none"
-				}
-
-				ssmList = append(ssmList, SSMContainer{
+				ssmC := SSMContainer{
 					Id:      c.ID[0:24],
 					Name:    c.Names[0][1:],
 					Version: v,
-					Port:    port,
-					Status:  status,
-				})
+				}
+				ssmC.Status = strings.Split(c.Status, " ")[0]
+
+				if ssmC.Status == "Up" {
+					ssmC.HostPort = strconv.Itoa(int(c.Ports[0].PublicPort))
+					ssmC.Port = strconv.Itoa(int(c.Ports[0].PrivatePort))
+					ssmC.NetworkType = c.Ports[0].Type
+				} else {
+					ssmC.HostPort = "none"
+				}
+
+				ssmList = append(ssmList, ssmC)
 			}
 		}
 	}
@@ -159,6 +158,42 @@ CMD cd config && node ../sub-store.min.js
 	fmt.Println("Files downloaded successfully.")
 }
 
+func (c *SSMContainer) Start() {
+	fmt.Println("Start container...")
+
+	err := DC.ContainerStart(DCCtx, c.Id, types.ContainerStartOptions{})
+	if err != nil {
+		fmt.Println("Failed to start container: ", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Container started successfully.")
+}
+
+func (c *SSMContainer) Stop() {
+	fmt.Println("Stop container...")
+
+	err := DC.ContainerStop(DCCtx, c.Id, container.StopOptions{})
+	if err != nil {
+		fmt.Println("Failed to stop container: ", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Container stopped successfully.")
+}
+
+func (c *SSMContainer) Delete() {
+	fmt.Println("Delete container...")
+
+	err := DC.ContainerRemove(DCCtx, c.Id, types.ContainerRemoveOptions{Force: true})
+	if err != nil {
+		fmt.Println("Failed to delete container: ", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Container deleted successfully.")
+}
+
 func StartImage(v, name, port string) {
 	fmt.Println("Start container...")
 
@@ -211,7 +246,7 @@ func StartImage(v, name, port string) {
 }
 
 func BuildContainer(v string) {
-	if imageIsExist(v) {
+	if ImageIsExist(v) {
 		fmt.Printf("The image %s is already exist, skip build. if you want rebuild it, please remove image first.\n", vars.DockerName+":"+v)
 		return
 	}
@@ -267,11 +302,12 @@ func BuildContainer(v string) {
 	fmt.Println("Docker image build successfully.")
 }
 
-func imageIsExist(v string) bool {
+func ImageIsExist(v string) bool {
 	// 检查镜像是否存在
 	images, err := DC.ImageList(DCCtx, types.ImageListOptions{All: true})
 	if err != nil {
-		log.Fatalln("Failed to list images:", err)
+		fmt.Println("Failed to list images:", err)
+		os.Exit(1)
 	}
 
 	for _, image := range images {
