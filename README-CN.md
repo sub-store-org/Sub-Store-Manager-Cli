@@ -28,13 +28,13 @@ curl -sSL https://desnlee.github.io/Sub-Store-Manager-Cli/install.sh | bash
 ssm new
 ```
 
-> 该命令支持以下 `flag`：
-> 
-> - `--name` or `-n` : 容器的唯一名称，默认名称为 `sub-store-manager-backend`。此名称将用于管理持久化数据，只要不手动删除该名称的持久化数据，或者使用 `ssm delete -c` 标志执行删除操作，无论是如何删除/重建容器，只要使用此名称都可以访问该数据。
->
-> - `--version` or `-v` : 一个 [Sub-Store Release](https://github.com/sub-store-org/Sub-Store/releases) 的版本字符串，默认获取最新版本。
->
-> - `--port` or `-p` : 指定端口映射，默认为 `3000`，且必须可用。如果你想使用域名访问服务，则需要使用反向代理工具（如 Nginx 或 Caddy）手动代理该端口。
+该命令支持以下 `flag`：
+ 
+- `--name` or `-n` : 容器的唯一名称，默认名称为 `sub-store-manager-backend`。此名称将用于管理持久化数据，只要不手动删除该名称的持久化数据，或者使用 `ssm delete -c` 标志执行删除操作，无论是如何删除/重建容器，只要使用此名称都可以访问该数据。
+
+- `--version` or `-v` : 一个 [Sub-Store Release](https://github.com/sub-store-org/Sub-Store/releases) 的版本字符串，默认获取最新版本。
+
+- `--port` or `-p` : 指定端口映射，默认为 `3000`，且必须可用。如果你想使用域名访问服务，则需要使用反向代理工具（如 Nginx 或 Caddy）手动代理该端口。
 
 
 
@@ -70,9 +70,9 @@ ssm stop <name>
 ssm delete <name>
 ```
 
-> 该命令支持以下 `flag`：
-> 
-> - `--clear` or `-c` : 同时删除容器的持久化数据。
+该命令支持以下 `flag`：
+ 
+- `--clear` or `-c` : 同时删除容器的持久化数据。
 
 
 ### update
@@ -83,9 +83,9 @@ ssm delete <name>
 ssm update <name>
 ```
 
-> 该命令支持以下 `flag`：
-> 
-> - `--version` or `-v` : 一个 [Sub-Store Release](https://github.com/sub-store-org/Sub-Store/releases) 版本字符串，默认为最新版本。您可以借助这个 flag 来降级 Sub-Store 的版本。
+该命令支持以下 `flag`：
+ 
+- `--version` or `-v` : 一个 [Sub-Store Release](https://github.com/sub-store-org/Sub-Store/releases) 版本字符串，默认为最新版本。您可以借助这个 flag 来降级 Sub-Store 的版本。
 
 
 ### list

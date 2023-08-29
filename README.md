@@ -29,13 +29,13 @@ Create a new sub-store docker container and run it. If the Image does not exist,
 ssm new
 ```
 
-> this command support the following flags:
->
-> - `--name` or `-n` : A unique name for the container, default name is `sub-store-manager-backend`. This name will be used to manage persistent data. As long as the persistent data with this name is not manually deleted, or execute `ssm delete` with `-c` flag, it will be accessible whenever the container is rebuilt or when the image is deleted and then launched using this name.
->
-> - `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest.
->
-> -`--port` or `-p` : To successfully create a new Docker container, you need to specify the port mapping. The default port is `3000`, and it must be available. If you want to access the container using a domain name, you will need to manually proxy this port with a reverse proxy tool such as Nginx or Caddy.
+this command support the following flags:
+
+- `--name` or `-n` : A unique name for the container, default name is `sub-store-manager-backend`. This name will be used to manage persistent data. As long as the persistent data with this name is not manually deleted, or execute `ssm delete` with `-c` flag, it will be accessible whenever the container is rebuilt or when the image is deleted and then launched using this name.
+
+- `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest.
+
+- `--port` or `-p` : To successfully create a new Docker container, you need to specify the port mapping. The default port is `3000`, and it must be available. If you want to access the container using a domain name, you will need to manually proxy this port with a reverse proxy tool such as Nginx or Caddy.
 
 
 ### start
@@ -70,9 +70,9 @@ Delete a sub-store Docker container by name, default name set as `sub-store-mana
 ssm delete <name>
 ```
 
-> this command support the following flags:
->
-> - `--clear` or `-c` : Delete the persistent data of the container at the same time.
+this command support the following flags:
+
+- `--clear` or `-c` : Delete the persistent data of the container at the same time.
 
 
 ### update
@@ -83,9 +83,9 @@ Update a sub-store Docker container by name, default name set as `sub-store-mana
 ssm update <name>
 ```
 
-> this command support the following flags:
-> 
-> - `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest. You can use this flag to downgrade the version of the container.
+this command support the following flags:
+
+- `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest. You can use this flag to downgrade the version of the container.
 
 
 ### list
