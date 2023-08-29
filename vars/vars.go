@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Version    = "0.0.3"
+	Version    = "0.0.4"
 	DockerName = "sub-store-manager-backend"
 )
 

@@ -120,26 +120,7 @@ func CreateDockerfile(v string) {
 	makeFile(dockerfilePath)
 
 	// 写入 Dockerfile
-	content := `FROM node:16.18-slim
-
-# 设置工作目录
-WORKDIR /app
-
-# 复制 package.json 和 pnpm-lock.yaml 并安装依赖项
-COPY package.json pnpm-lock.yaml ./
-RUN mkdir config && npm install -g pnpm && pnpm install && npm cache clean --force
-
-# 复制项目文件
-COPY . .
-
-# 暴露端口
-EXPOSE 3000
-
-# 启动应用
-CMD cd config && node ../sub-store.min.js
-`
-
-	err := os.WriteFile(dockerfilePath, []byte(content), 0666)
+	err := os.WriteFile(dockerfilePath, []byte(dockerfileStrNode), 0666)
 	if err != nil {
 		fmt.Println("Failed to write Dockerfile: ", err)
 		os.Exit(1)
@@ -148,12 +129,12 @@ CMD cd config && node ../sub-store.min.js
 	fmt.Println("Dockerfile created successfully.")
 
 	// 下载对应版本后端程序文件
-	packageJson := filepath.Join(versionDir, "package.json")
-	downloadFile("https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/backend/package.json", packageJson)
-	lockfile := filepath.Join(versionDir, "pnpm-lock.yaml")
-	downloadFile("https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/backend/pnpm-lock.yaml", lockfile)
-	minFile := filepath.Join(versionDir, "sub-store.min.js")
-	downloadFile(fmt.Sprintf("https://github.com/sub-store-org/Sub-Store/releases/download/%s/sub-store.min.js", v), minFile)
+	// packageJson := filepath.Join(versionDir, "package.json")
+	// downloadFile("https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/backend/package.json", packageJson)
+	// lockfile := filepath.Join(versionDir, "pnpm-lock.yaml")
+	// downloadFile("https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/backend/pnpm-lock.yaml", lockfile)
+	minFile := filepath.Join(versionDir, "sub-store.bundle.js")
+	downloadFile(fmt.Sprintf("https://github.com/sub-store-org/Sub-Store/releases/download/%s/sub-store.bundle.js", v), minFile)
 
 	fmt.Println("Files downloaded successfully.")
 }
