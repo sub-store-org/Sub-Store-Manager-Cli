@@ -13,7 +13,7 @@ var inputPort = ""
 var rootCmd = &cobra.Command{
 	Use:   "ssm",
 	Short: "A Sub-Store Manager CLI",
-	Long:  `A Sub-Store Manager CLI for managing sub-store in Linux`,
+	Long:  `A Sub-Store Manager CLI for managing sub-store`,
 }
 
 func init() {
