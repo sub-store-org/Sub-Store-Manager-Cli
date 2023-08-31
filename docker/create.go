@@ -121,16 +121,12 @@ func (c *Container) buildImage(tar *os.File) {
 func (c *Container) StartImage() {
 	fmt.Println("Start container...")
 
-	configDir := filepath.Join(vars.ConfigDir, c.Name)
-
 	// 创建一个容器并运行它
 	containerConfig := &container.Config{
 		Image: c.ImageName + ":" + c.Version,
 	}
 
-	hostConfig := &container.HostConfig{
-		Binds: []string{configDir + ":/app/config"},
-	}
+	hostConfig := &container.HostConfig{}
 
 	switch c.ContainerType {
 	case vars.ContainerTypeFE:
@@ -143,6 +139,8 @@ func (c *Container) StartImage() {
 			},
 		}
 	case vars.ContainerTypeBE:
+		configDir := filepath.Join(vars.ConfigDir, c.Name)
+		hostConfig.Binds = append(hostConfig.Binds, configDir+":/app/config")
 		hostConfig.PortBindings = nat.PortMap{
 			"3000/tcp": []nat.PortBinding{
 				{
