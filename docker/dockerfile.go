@@ -24,7 +24,7 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y curl unzip && \
     rm -rf /var/lib/apt/lists/* && \
-    curl -LJO https://desnlee.github.io/Sub-Store-Manager-Cli/nginx.conf && \
+    curl -LJO https://sub-store-org.github.io/resource/ssm/nginx.conf && \
     curl -o master.zip -LJ https://github.com/sub-store-org/Sub-Store-Front-End/archive/refs/heads/master.zip && \
     unzip master.zip
 

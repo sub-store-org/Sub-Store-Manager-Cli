@@ -10,7 +10,7 @@ A CLI tool for managing [Sub-Store](https://github.com/sub-store-org/Sub-Store) 
 You can install this tool by running the following command:
 
 ```bash
-curl -sSL https://desnlee.github.io/Sub-Store-Manager-Cli/install.sh | bash
+curl -sSL https://sub-store-org.github.io/resource/ssm/install.sh | bash
 ```
 
 Or you can download [release binary](https://github.com/DesnLee/Sub-Store-Manager-Cli/releases) and configure your environment variable manually.

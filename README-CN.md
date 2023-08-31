@@ -10,7 +10,7 @@
 您可以通过运行以下命令来安装这个工具：
 
 ```bash
-curl -sSL https://desnlee.github.io/Sub-Store-Manager-Cli/install.sh | bash
+curl -sSL https://sub-store-org.github.io/resource/ssm/install.sh | bash
 ```
 
 或者您可以下载 [Release 文件](https://github.com/DesnLee/Sub-Store-Manager-Cli/releases)，并手动配置环境变量和程序名称。
