@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
-	"sub-store-manager-cli/lib"
+	"sub-store-manager-cli/docker"
 	"sub-store-manager-cli/vars"
 )
 
@@ -16,7 +14,7 @@ var stopCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var n string
 		if len(args) == 0 {
-			n = vars.DockerName
+			n = vars.DockerNameBE
 		} else {
 			n = args[0]
 		}
@@ -25,18 +23,6 @@ var stopCmd = &cobra.Command{
 }
 
 func stopContainer(n string) {
-	fmt.Println("stop container", n)
-
-	// 检查是否存在正在运行的名字为n的容器
-	isExist := false
-	for _, c := range lib.GetSSMContainers() {
-		if c.Name == n {
-			c.Stop()
-			isExist = true
-			break
-		}
-	}
-	if !isExist {
-		fmt.Printf("container %s not found\n", n)
-	}
+	c := docker.GetContainerByName(n)
+	c.Stop()
 }

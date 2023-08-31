@@ -15,7 +15,7 @@ var updateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var n string
 		if len(args) == 0 {
-			n = vars.DockerName
+			n = vars.DockerNameBE
 		} else {
 			n = args[0]
 		}

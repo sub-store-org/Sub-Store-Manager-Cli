@@ -6,6 +6,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
+	"sub-store-manager-cli/docker"
 	"sub-store-manager-cli/lib"
 )
 
@@ -18,11 +19,13 @@ var lsCmd = &cobra.Command{
 }
 
 func listAllSSMContainer() {
-	// 获取所有 SSM 容器列表
-	ssmList := lib.GetSSMContainers()
+	fel, bel, err := docker.GetSSMContainers()
+	if err != nil {
+		lib.PrintError("Failed to get SSM containers:", err)
+	}
 
-	if len(ssmList) == 0 {
-		fmt.Println("No Sub-Store Manager Docker Containers found")
+	if len(fel) == 0 && len(bel) == 0 {
+		fmt.Println("No Sub-Store Manager Front-End Docker Containers found")
 		return
 	}
 
@@ -30,12 +33,17 @@ func listAllSSMContainer() {
 	headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
 	columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-	tbl := table.New("ID", "Version", "Port", "Status", "Name")
+	tbl := table.New("Type", "ID", "Version", "Port", "Status", "Name")
 	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
-	for _, container := range ssmList {
-		portStr := fmt.Sprintf("%s: %s->%s", container.NetworkType, container.HostPort, container.Port)
-		tbl.AddRow(container.Id, container.Version, portStr, container.Status, container.Name)
+	for _, c := range fel {
+		var portStr string
+		if p, e := c.GetPortInfo(); e != nil {
+			portStr = "none"
+		} else {
+			portStr = fmt.Sprintf("%s: %s->%s", p.Type, p.Public, p.Private)
+		}
+		tbl.AddRow(c.ContainerType, c.DockerContainer.ID, c.Version, portStr, c.DockerContainer.Status, c.Name)
 	}
 
 	tbl.Print()

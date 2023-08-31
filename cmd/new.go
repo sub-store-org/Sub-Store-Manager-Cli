@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"sub-store-manager-cli/docker"
 	"sub-store-manager-cli/lib"
 	"sub-store-manager-cli/vars"
 )
@@ -18,9 +19,10 @@ var newCmd = &cobra.Command{
 }
 
 func init() {
-	newCmd.Flags().StringVarP(&inputVersion, "version", "v", "", "The target version to launch the backend of the sub-store")
-	newCmd.Flags().StringVarP(&inputName, "name", "n", vars.DockerName, "The container name")
+	newCmd.Flags().StringVarP(&inputVersion, "version", "v", "", "The target version to launch of the sub-store")
+	newCmd.Flags().StringVarP(&inputName, "name", "n", vars.DockerNameBE, "The container name")
 	newCmd.Flags().StringVarP(&inputPort, "port", "p", "3000", "The port to expose")
+	newCmd.Flags().StringVarP(&inputType, "type", "t", vars.ContainerTypeBE, "The target type to create a sub-store container")
 }
 
 func newContainer() {
@@ -52,10 +54,11 @@ func newContainer() {
 	}
 
 	// 检查是否已运行一个同名容器
-	for _, c := range lib.GetSSMContainers() {
-		if c.Name == inputName {
-			fmt.Printf("The container %s is already exist, if you want run another backend at sametime, please specifed a container name.\n", c.Name)
-			os.Exit(1)
+
+	for _, c := range docker.GetAllContainers() {
+		name := c.Names[0][1:]
+		if name == inputName {
+			lib.PrintError(fmt.Sprintf("The container %s is already exist, if you want run another backend at sametime, please specifed a container name.\n", name), nil)
 		}
 	}
 
@@ -65,7 +68,16 @@ func newContainer() {
 	//     os.Exit(1)
 	// }
 
-	lib.CreateDockerfile(target)
-	lib.BuildContainer(target)
-	lib.StartImage(target, inputName, inputPort)
+	imageName, imageType := getType()
+	c := docker.Container{
+		Name:          inputName,
+		ImageName:     imageName,
+		Version:       target,
+		HostPort:      inputPort,
+		ContainerType: imageType,
+		DockerfileStr: docker.DockerfileStr.Node,
+	}
+
+	c.CreateImage()
+	c.StartImage()
 }

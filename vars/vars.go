@@ -7,14 +7,19 @@ import (
 )
 
 const (
-	Version    = "0.0.4"
-	DockerName = "sub-store-manager-backend"
+	Version         = "0.0.5"
+	DockerNameBE    = "ssm-backend"
+	DockerNameFE    = "ssm-frontend"
+	ContainerTypeFE = "frontend"
+	ContainerTypeBE = "backend"
 )
 
 var (
 	HomeDir    string
 	AppDir     string
 	AppFileDir string
+	FEFileDir  string
+	BEFileDir  string
 	ConfigDir  string
 )
 
@@ -27,5 +32,7 @@ func init() {
 	HomeDir = homeDir
 	AppDir = filepath.Join(HomeDir, ".ssm")
 	AppFileDir = filepath.Join(AppDir, "appFiles")
+	FEFileDir = filepath.Join(AppFileDir, "frontend")
+	BEFileDir = filepath.Join(AppFileDir, "backend")
 	ConfigDir = filepath.Join(AppDir, "configs")
 }

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"sub-store-manager-cli/lib"
+	"sub-store-manager-cli/docker"
 	"sub-store-manager-cli/vars"
 )
 
@@ -18,7 +18,7 @@ var deleteCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var n string
 		if len(args) == 0 {
-			n = vars.DockerName
+			n = vars.DockerNameBE
 		} else {
 			n = args[0]
 		}
@@ -31,24 +31,14 @@ func init() {
 }
 
 func deleteContainer(n string) {
-	fmt.Println("delete container", n)
+	c := docker.GetContainerByName(n)
+	c.Delete()
 
-	// 检查是否存在正在运行的名字为n的容器
-	isExist := false
-	for _, c := range lib.GetSSMContainers() {
-		if c.Name == n {
-			c.Delete()
-			// 删除配置文件
-			if deleteConfig {
-				err := os.RemoveAll(filepath.Join(vars.ConfigDir, n))
-				if err != nil {
-					fmt.Println("container is deleted, but failed to clear config file:", err)
-				}
-			}
-			isExist = true
+	if c.ContainerType == vars.ContainerTypeBE && deleteConfig {
+		err := os.RemoveAll(filepath.Join(vars.ConfigDir, n))
+		if err != nil {
+			fmt.Printf("container %s is deleted, but failed to clear config file: %s", n, err)
+			os.Exit(0)
 		}
-	}
-	if !isExist {
-		fmt.Printf("container %s not found\n", n)
 	}
 }

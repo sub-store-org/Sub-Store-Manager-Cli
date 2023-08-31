@@ -2,7 +2,6 @@ package lib
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -13,7 +12,7 @@ var (
 	HC       *resty.Client
 )
 
-func initHttpClient() {
+func InitHttpClient() {
 	if hcIsInit {
 		return
 	}
@@ -38,7 +37,7 @@ func GetVersionsInfo() []LatestRes {
 	var json []LatestRes
 	_, err := HC.R().SetResult(&json).Get("https://api.github.com/repos/sub-store-org/Sub-Store/releases")
 	if err != nil {
-		log.Fatalln("Failed to get versions:", err)
+		PrintError("Failed to get versions info:", err)
 	}
 	return json
 }
@@ -60,9 +59,9 @@ func GetLatestVersionString() (string, error) {
 	return GetVersionsString()[0], nil
 }
 
-func downloadFile(url string, path string) {
+func DownloadFile(url string, path string) {
 	_, err := HC.R().SetOutput(path).Get(url)
 	if err != nil {
-		log.Fatalln("Failed to download file:", err)
+		PrintError("Failed to download file:", err)
 	}
 }
