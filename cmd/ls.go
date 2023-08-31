@@ -21,7 +21,7 @@ func listAllSSMContainer() {
 	fel, bel := docker.GetSSMContainers()
 
 	if len(fel) == 0 && len(bel) == 0 {
-		fmt.Println("No Sub-Store Manager Front-End Docker Containers found")
+		fmt.Println("No Sub-Store Manager Docker Containers found")
 		return
 	}
 
