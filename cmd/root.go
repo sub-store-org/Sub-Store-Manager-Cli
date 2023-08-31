@@ -10,7 +10,7 @@ import (
 var inputVersion = ""
 var inputName = ""
 var inputPort = ""
-var inputType = ""
+var inputType bool
 
 var rootCmd = &cobra.Command{
 	Use:   "ssm",
@@ -19,16 +19,14 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(versionCmd, lsCmd, newCmd, stopCmd, startCmd, updateCmd, deleteCmd)
+	rootCmd.AddCommand(versionCmd, lsCmd, newCmd, stopCmd, startCmd, deleteCmd)
 }
 
 func getType() (string, string) {
-	if inputType == "" || inputType == "be" {
+	if !inputType {
 		return vars.DockerNameBE, vars.ContainerTypeBE
-	} else if inputType == "fe" {
-		return vars.DockerNameFE, vars.ContainerTypeFE
 	} else {
-		return "", ""
+		return vars.DockerNameFE, vars.ContainerTypeFE
 	}
 }
 

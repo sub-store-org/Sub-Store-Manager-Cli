@@ -10,7 +10,7 @@ import (
 
 // Start 启动容器
 func (c *Container) Start() {
-	fmt.Printf("Start container %s...", c.Name)
+	fmt.Printf("Start container %s...\n", c.Name)
 
 	err := dc.ContainerStart(dcCtx, c.DockerContainer.ID, types.ContainerStartOptions{})
 	if err != nil {
@@ -23,7 +23,7 @@ func (c *Container) Start() {
 
 // Stop 停止容器
 func (c *Container) Stop() {
-	fmt.Printf("Stop container %s...", c.Name)
+	fmt.Printf("Stop container %s...\n", c.Name)
 
 	err := dc.ContainerStop(dcCtx, c.DockerContainer.ID, container.StopOptions{})
 	if err != nil {
@@ -36,7 +36,7 @@ func (c *Container) Stop() {
 
 // Delete 删除容器
 func (c *Container) Delete() {
-	fmt.Printf("Delete container %s...", c.Name)
+	fmt.Printf("Delete container %s...\n", c.Name)
 
 	err := dc.ContainerRemove(dcCtx, c.DockerContainer.ID, types.ContainerRemoveOptions{Force: true})
 	if err != nil {

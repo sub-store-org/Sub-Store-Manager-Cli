@@ -102,3 +102,35 @@ func writeDockerfileToOS(d string, t string, v string) {
 
 	fmt.Println("Dockerfile created successfully.")
 }
+
+func (c *Container) SetDefaultName() {
+	switch c.ContainerType {
+	case vars.ContainerTypeFE:
+		c.Name = vars.DockerNameFE
+	case vars.ContainerTypeBE:
+		c.Name = vars.DockerNameBE
+	}
+}
+
+func (c *Container) SetDefaultPort() {
+	switch c.ContainerType {
+	case vars.ContainerTypeFE:
+		c.HostPort = "80"
+	case vars.ContainerTypeBE:
+		c.HostPort = "3000"
+	}
+}
+
+func (c *Container) SetDockerfile(flag string) {
+	switch c.ContainerType {
+	case vars.ContainerTypeFE:
+		c.DockerfileStr = DockerfileStr.FE
+	case vars.ContainerTypeBE:
+		switch flag {
+		case "node":
+			c.DockerfileStr = DockerfileStr.Node
+		default:
+			lib.PrintError("Not support backend container type.", nil)
+		}
+	}
+}

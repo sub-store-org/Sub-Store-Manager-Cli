@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 	"sub-store-manager-cli/docker"
@@ -20,64 +19,59 @@ var newCmd = &cobra.Command{
 
 func init() {
 	newCmd.Flags().StringVarP(&inputVersion, "version", "v", "", "The target version to launch of the sub-store")
-	newCmd.Flags().StringVarP(&inputName, "name", "n", vars.DockerNameBE, "The container name")
-	newCmd.Flags().StringVarP(&inputPort, "port", "p", "3000", "The port to expose")
-	newCmd.Flags().StringVarP(&inputType, "type", "t", vars.ContainerTypeBE, "The target type to create a sub-store container")
+	newCmd.Flags().StringVarP(&inputName, "name", "n", "", "The container name")
+	newCmd.Flags().StringVarP(&inputPort, "port", "p", "", "The port to expose")
+	newCmd.Flags().BoolVarP(&inputType, "interface", "i", false, "The target type to create a sub-store container")
 }
 
 func newContainer() {
-	// 检查指定版本
-	var target string
-	if inputVersion == "" {
-		if t, err := lib.GetLatestVersionString(); err != nil {
-			fmt.Printf("Failed to get latest version: %s\n", err)
-			os.Exit(1)
-		} else {
-			target = t
-			fmt.Printf("No version specified, using the latest version %s\n", target)
-		}
-	} else {
-		isValid := false
-		for _, v := range lib.GetVersionsString() {
-			if v == inputVersion {
-				isValid = true
-				break
-			}
-		}
+	imageName, imageType := getType()
+	c := docker.Container{
+		ImageName:     imageName,
+		ContainerType: imageType,
+	}
 
-		if !isValid {
-			fmt.Printf("The version %s is invalid，please select one of version in https://github.com/sub-store-org/Sub-Store/releases\n", inputVersion)
-			os.Exit(1)
+	// 检查是否已有同名容器
+	if inputName == "" {
+		c.SetDefaultName()
+	} else {
+		c.Name = inputName
+	}
+	_, isExist := docker.GetContainerByName(c.Name)
+	if isExist {
+		lib.PrintError("A container with the same name already exists.", nil)
+	}
+
+	// 检查指定版本
+	if inputVersion == "" {
+		c.SetLatestVersion()
+		fmt.Println("No version specified, using the latest version")
+	} else {
+		if c.ContainerType == vars.ContainerTypeFE {
+			c.SetLatestVersion()
+			lib.PrintInfo("The version flag is ignored when creating a front-end container.")
 		} else {
-			target = inputVersion
+			c.Version = inputVersion
+			isValid := c.CheckVersionValid()
+			if !isValid {
+				lib.PrintError("The version is not valid.", nil)
+			}
 		}
 	}
 
-	// 检查是否已运行一个同名容器
-
-	for _, c := range docker.GetAllContainers() {
-		name := c.Names[0][1:]
-		if name == inputName {
-			lib.PrintError(fmt.Sprintf("The container %s is already exist, if you want run another backend at sametime, please specifed a container name.\n", name), nil)
-		}
+	// 设置端口
+	if inputPort == "" {
+		c.SetDefaultPort()
+	} else {
+		c.HostPort = inputPort
 	}
 
 	// 检查端口
-	// if !lib.CheckPort(inputPort) {
-	//     fmt.Printf("The port %s is already in use, please specify another port.\n", inputPort)
-	//     os.Exit(1)
-	// }
-
-	imageName, imageType := getType()
-	c := docker.Container{
-		Name:          inputName,
-		ImageName:     imageName,
-		Version:       target,
-		HostPort:      inputPort,
-		ContainerType: imageType,
-		DockerfileStr: docker.DockerfileStr.Node,
+	if portOk := lib.CheckPort(c.HostPort); !portOk {
+		lib.PrintError("The port is unavailable.", nil)
 	}
 
+	c.SetDockerfile("node")
 	c.CreateImage()
 	c.StartImage()
 }

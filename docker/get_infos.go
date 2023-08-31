@@ -51,7 +51,7 @@ func GetSSMContainers() (fec []Container, bec []Container, error error) {
 	return
 }
 
-func GetContainerByName(n string) Container {
+func GetContainerByName(n string) (Container, bool) {
 	// 检查是否存在正在运行的名字为n的容器
 	fel, bel, err := GetSSMContainers()
 	if err != nil {
@@ -60,18 +60,17 @@ func GetContainerByName(n string) Container {
 
 	for _, fec := range fel {
 		if fec.Name == n {
-			return fec
+			return fec, true
 		}
 	}
 
 	for _, bec := range bel {
 		if bec.Name == n {
-			return bec
+			return bec, true
 		}
 	}
 
-	lib.PrintError("container not found", nil)
-	return Container{}
+	return Container{}, false
 }
 
 func (c *Container) GetPortInfo() (info PortInfo, error error) {

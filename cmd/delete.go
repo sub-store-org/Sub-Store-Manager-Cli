@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"sub-store-manager-cli/docker"
+	"sub-store-manager-cli/lib"
 	"sub-store-manager-cli/vars"
 )
 
@@ -31,7 +32,10 @@ func init() {
 }
 
 func deleteContainer(n string) {
-	c := docker.GetContainerByName(n)
+	c, isExist := docker.GetContainerByName(n)
+	if !isExist {
+		lib.PrintError("container not found", nil)
+	}
 	c.Delete()
 
 	if c.ContainerType == vars.ContainerTypeBE && deleteConfig {

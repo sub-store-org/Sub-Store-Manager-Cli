@@ -36,14 +36,14 @@ func listAllSSMContainer() {
 	tbl := table.New("Type", "ID", "Version", "Port", "Status", "Name")
 	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
-	for _, c := range fel {
+	for _, c := range append(fel, bel...) {
 		var portStr string
 		if p, e := c.GetPortInfo(); e != nil {
 			portStr = "none"
 		} else {
 			portStr = fmt.Sprintf("%s: %s->%s", p.Type, p.Public, p.Private)
 		}
-		tbl.AddRow(c.ContainerType, c.DockerContainer.ID, c.Version, portStr, c.DockerContainer.Status, c.Name)
+		tbl.AddRow(c.ContainerType, c.DockerContainer.ID[:24], c.Version, portStr, c.DockerContainer.State, c.Name)
 	}
 
 	tbl.Print()

@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"sub-store-manager-cli/docker"
+	"sub-store-manager-cli/lib"
 	"sub-store-manager-cli/vars"
 )
 
@@ -23,6 +24,9 @@ var stopCmd = &cobra.Command{
 }
 
 func stopContainer(n string) {
-	c := docker.GetContainerByName(n)
+	c, isExist := docker.GetContainerByName(n)
+	if !isExist {
+		lib.PrintError("container not found", nil)
+	}
 	c.Stop()
 }

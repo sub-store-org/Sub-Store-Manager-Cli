@@ -15,9 +15,35 @@ import (
 	"sub-store-manager-cli/vars"
 )
 
+// createImageFromPath 从指定路径创建镜像
+func createImageFromPath(c *Container, bPath string, tPath string) {
+	// 如果旧 tar 文件存在则删除
+	if lib.CheckExist(tPath) {
+		lib.RemoveFile(tPath)
+	}
+	err := lib.CreateTarArchive(bPath, tPath)
+	if err != nil {
+		lib.PrintError("Failed to create tar archive:", err)
+	}
+	defer os.Remove(tPath)
+
+	tarFile, err := os.Open(tPath)
+	if err != nil {
+		lib.PrintError("Failed to open tar file:", err)
+	}
+	defer tarFile.Close()
+
+	// 构建容器
+	c.buildImage(tarFile)
+}
+
 // CreateFEImage 创建前端镜像
 func createFEImage(c *Container) {
-	fmt.Println("Start building Front-end docker image, please waiting...")
+	// 打开 Dockerfile 文件
+	buildDir := filepath.Join(vars.FEFileDir, c.Version)
+	tarPath := filepath.Join(vars.FEFileDir, "temp.tar")
+
+	createImageFromPath(c, buildDir, tarPath)
 }
 
 // CreateBEImage 创建后端镜像
@@ -35,25 +61,7 @@ func createBEImage(c *Container) {
 	lib.DownloadFile(fmt.Sprintf("https://github.com/sub-store-org/Sub-Store/releases/download/%s/sub-store.bundle.js", c.Version), minFile)
 
 	fmt.Println("Files downloaded successfully.")
-
-	// 如果旧 tar 文件存在则删除
-	if lib.CheckExist(tarPath) {
-		lib.RemoveFile(tarPath)
-	}
-	err := lib.CreateTarArchive(buildDir, tarPath)
-	if err != nil {
-		lib.PrintError("Failed to create tar archive:", err)
-	}
-	defer os.Remove(tarPath)
-
-	tarFile, err := os.Open(tarPath)
-	if err != nil {
-		lib.PrintError("Failed to open tar file:", err)
-	}
-	defer tarFile.Close()
-
-	// 构建容器
-	c.buildImage(tarFile)
+	createImageFromPath(c, buildDir, tarPath)
 }
 
 // CreateImage 创建镜像
@@ -73,12 +81,11 @@ func (c *Container) CreateImage() {
 		lib.PrintError("Not provide Dockerfile, please check.", nil)
 	}
 
+	writeDockerfileToOS(c.DockerfileStr, c.ContainerType, c.Version)
 	switch c.ContainerType {
 	case vars.ContainerTypeFE:
-		writeDockerfileToOS(c.DockerfileStr, c.ContainerType, c.Version)
 		createFEImage(c)
 	case vars.ContainerTypeBE:
-		writeDockerfileToOS(c.DockerfileStr, c.ContainerType, c.Version)
 		createBEImage(c)
 	default:
 		lib.PrintError("Not support container type.", nil)
