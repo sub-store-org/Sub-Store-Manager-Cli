@@ -23,6 +23,7 @@ go.work
 
 bin/
 script/
+resources/
 .idea
 .vscode
 .DS_Store
