@@ -7,7 +7,6 @@ import (
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 	"sub-store-manager-cli/docker"
-	"sub-store-manager-cli/lib"
 )
 
 var lsCmd = &cobra.Command{
@@ -19,10 +18,7 @@ var lsCmd = &cobra.Command{
 }
 
 func listAllSSMContainer() {
-	fel, bel, err := docker.GetSSMContainers()
-	if err != nil {
-		lib.PrintError("Failed to get SSM containers:", err)
-	}
+	fel, bel := docker.GetSSMContainers()
 
 	if len(fel) == 0 && len(bel) == 0 {
 		fmt.Println("No Sub-Store Manager Front-End Docker Containers found")

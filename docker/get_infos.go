@@ -18,12 +18,8 @@ func GetAllContainers() []types.Container {
 	return containers
 }
 
-func GetSSMContainers() (fec []Container, bec []Container, error error) {
-	containers, err := dc.ContainerList(dcCtx, types.ContainerListOptions{All: true})
-	if err != nil {
-		error = err
-		return
-	}
+func GetSSMContainers() (fec []Container, bec []Container) {
+	containers := GetAllContainers()
 
 	// 遍历容器列表并解析镜像名称
 	for _, c := range containers {
@@ -53,10 +49,7 @@ func GetSSMContainers() (fec []Container, bec []Container, error error) {
 
 func GetContainerByName(n string) (Container, bool) {
 	// 检查是否存在正在运行的名字为n的容器
-	fel, bel, err := GetSSMContainers()
-	if err != nil {
-		lib.PrintError("Failed to get containers", err)
-	}
+	fel, bel := GetSSMContainers()
 
 	for _, fec := range fel {
 		if fec.Name == n {
