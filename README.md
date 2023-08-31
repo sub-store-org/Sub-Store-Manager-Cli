@@ -31,16 +31,18 @@ ssm new
 
 this command support the following flags:
 
-- `--name` or `-n` : A unique name for the container, default name is `sub-store-manager-backend`. This name will be used to manage persistent data. As long as the persistent data with this name is not manually deleted, or execute `ssm delete` with `-c` flag, it will be accessible whenever the container is rebuilt or when the image is deleted and then launched using this name.
+- `--interface` or `-i` : When you use the `-i` flag, a sub-store front-end container is created instead of a backend container. The default behavior is to create a backend container.
 
-- `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest.
+- `--name` or `-n` : A unique name for the container, default name is `ssm-backend`, If you create a frontend container with the `-i` flag, the default name will be `ssm-frontend`. This name will be used to manage persistent data. As long as the persistent data with this name is not manually deleted, or execute `ssm delete` with `-c` flag, it will be accessible whenever the container is rebuilt or when the image is deleted and then launched using this name.
 
-- `--port` or `-p` : To successfully create a new Docker container, you need to specify the port mapping. The default port is `3000`, and it must be available. If you want to access the container using a domain name, you will need to manually proxy this port with a reverse proxy tool such as Nginx or Caddy.
+- `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest. If you pass `-i` to create a front-end container, `-v` will be ignored, it always uses the latest version of the front-end.
+
+- `--port` or `-p` : To successfully create a new Docker container, you need to specify the port mapping. The default port is `3000`, and it must be available. If you pass `-i` to create a front-end container, the default port will be `80`. If you want to access the container using a domain name, you will need to manually proxy this port with a reverse proxy tool such as Nginx or Caddy.
 
 
 ### start
 
-Start a non-running sub-store Docker container by name, default name set as `sub-store-manager-backend`.
+Start a non-running sub-store Docker container by name, default name set as `ssm-backend`.
 
 > Equivalent to `docker start <name>`.
 
@@ -51,7 +53,7 @@ ssm new <name>
 
 ### stop
 
-Stop a running sub-store Docker container by name, default name set as `sub-store-manager-backend`.
+Stop a running sub-store Docker container by name, default name set as `ssm-backend`.
 
 > Equivalent to `docker stop <name>`.
 
@@ -62,7 +64,7 @@ ssm stop <name>
 
 ### delete
 
-Delete a sub-store Docker container by name, default name set as `sub-store-manager-backend`.
+Delete a sub-store Docker container by name, default name set as `ssm-backend`.
 
 > Equivalent to `docker rm -f <name>`.
 
@@ -72,27 +74,14 @@ ssm delete <name>
 
 this command support the following flags:
 
-- `--clear` or `-c` : Delete the persistent data of the container at the same time.
-
-
-### update
-
-Update a sub-store Docker container by name, default name set as `sub-store-manager-backend`.
-
-```bash
-ssm update <name>
-```
-
-this command support the following flags:
-
-- `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest. You can use this flag to downgrade the version of the container.
+- `--clear` or `-c` : Delete the persistent data of the container at the same time. If you delete a front-end container, `-c` will be ignored, because the front-end container does not have persistent data.
 
 
 ### list
 
 List all sub-store Docker containers.
 
-> Equivalent to `docker ps -a`, filter images with names starting with `sub-store-manager-backend`.
+> Equivalent to `docker ps -a`, filter which container started by `ssm` image.
 
 ```bash
 ssm ls
@@ -124,4 +113,4 @@ rm -rf ~/.ssm
 
 
 # License
-GPL-2.0 License
+GPL-3.0 License
