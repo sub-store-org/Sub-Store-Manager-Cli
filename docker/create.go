@@ -141,6 +141,9 @@ func (c *Container) StartImage() {
 	case vars.ContainerTypeBE:
 		configDir := filepath.Join(vars.ConfigDir, c.Name)
 		hostConfig.Binds = append(hostConfig.Binds, configDir+":/app/config")
+		hostConfig.RestartPolicy = container.RestartPolicy{
+			Name: "unless-stopped",
+		}
 		hostConfig.PortBindings = nat.PortMap{
 			"3000/tcp": []nat.PortBinding{
 				{
