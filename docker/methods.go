@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/docker/docker/api/types"
 	"sub-store-manager-cli/lib"
 	"sub-store-manager-cli/vars"
@@ -126,11 +127,32 @@ func (c *Container) SetDockerfile(flag string) {
 	case vars.ContainerTypeFE:
 		c.DockerfileStr = DockerfileStr.FE
 	case vars.ContainerTypeBE:
-		switch flag {
-		case "node":
-			c.DockerfileStr = DockerfileStr.Node
-		default:
-			lib.PrintError("Not support backend container type.", nil)
+		target, err := semver.NewVersion(c.Version)
+		if err != nil {
+			lib.PrintError("Failed to parse target version.", err)
 		}
+		bundleRule, err := semver.NewConstraint(">= 2.14.40")
+		if err != nil {
+			lib.PrintError("Failed to parse bundle version.", err)
+		}
+		envRule, err := semver.NewConstraint(">= 2.14.49")
+		if err != nil {
+			lib.PrintError("Failed to parse env version.", err)
+		}
+
+		if canUseBundle, _ := bundleRule.Validate(target); !canUseBundle {
+			lib.PrintError("The version is not supported, please use a version after 2.14.40.", nil)
+		} else if canUseEnv, _ := envRule.Validate(target); !canUseEnv {
+			c.DockerfileStr = DockerfileStr.Node
+		} else {
+			c.DockerfileStr = DockerfileStr.NodeWithDataEnv
+		}
+
+		// switch flag {
+		// case "node":
+		//     c.DockerfileStr = DockerfileStr.Node
+		// default:
+		//     lib.PrintError("Not support backend container type.", nil)
+		// }
 	}
 }

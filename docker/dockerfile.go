@@ -1,12 +1,12 @@
 package docker
 
 type Dockerfile struct {
-	Node string
-	FE   string
+	Node            string
+	NodeWithDataEnv string
+	FE              string
 }
 
-var DockerfileStr = Dockerfile{
-	Node: `FROM node:16-alpine
+const nodeBase = `FROM node:16-alpine
 
 WORKDIR /app
 
@@ -16,7 +16,12 @@ RUN mkdir config
 
 EXPOSE 3000
 
-CMD cd config && node ../sub-store.bundle.js`,
+`
+
+var DockerfileStr = Dockerfile{
+	Node: nodeBase + "CMD cd config && node ../sub-store.bundle.js",
+
+	NodeWithDataEnv: nodeBase + "CMD SUB_STORE_DATA_BASE_PATH=/app/config node sub-store.bundle.js",
 
 	FE: `FROM debian:bullseye-slim AS downloader
 
