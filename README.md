@@ -40,6 +40,21 @@ this command support the following flags:
 - `--port` or `-p` : To successfully create a new Docker container, you need to specify the port mapping. The default port is `3000`, and it must be available. If you pass `-i` to create a front-end container, the default port will be `80`. If you want to access the container using a domain name, you will need to manually proxy this port with a reverse proxy tool such as Nginx or Caddy.
 
 
+### update
+
+To update a sub-store docker container, ensure that the image already exists and is running.
+
+```bash
+ssm update
+```
+
+this command support the following flags:
+
+- `--name` or `-n` : A name of running container, default name is `ssm-backend`.
+
+- `--version` or `-v` : A [Sub-Store release](https://github.com/sub-store-org/Sub-Store/releases) version string, default is latest. If you update a front-end container, `-v` will be ignored, it always uses the latest version of the front-end.
+
+
 ### start
 
 Start a non-running sub-store Docker container by name, default name set as `ssm-backend`.

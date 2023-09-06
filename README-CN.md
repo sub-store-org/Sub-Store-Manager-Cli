@@ -39,6 +39,20 @@ ssm new
 - `--port` 或 `-p` ：指定端口映射，默认为 `3000`，且必须可用，如果您传递了 `-i` 标标志来创建一个前端容器，则默认端口为 `80`。如果你想使用域名访问服务，则需要使用反向代理工具（如 Nginx 或 Caddy）手动代理该端口。
 
 
+### update
+
+更新一个 Sub-Store Docker 容器，确保镜像已经存在且正在运行。
+
+```bash
+ssm update
+```
+
+该命令支持以下 `flag`：
+
+- `--name` 或 `-n` ：一个正在运行的容器名称，默认名称为 `ssm-backend`。
+
+- `--version` 或 `-v` ：一个 [Sub-Store Release](https://github.com/sub-store-org/Sub-Store/releases) 的版本字符串，默认获取最新版本。如果您更新目标为前端容器，则 `-v` 标志将被忽略，它总是使用最新版本的前端。
+
 
 ### start
 
