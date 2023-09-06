@@ -16,5 +16,5 @@ func PrintError(text string, err error) {
 }
 
 func PrintInfo(info string) {
-	fmt.Println("Info: ", info)
+	fmt.Println("Info:", info)
 }

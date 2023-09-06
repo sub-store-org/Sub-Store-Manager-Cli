@@ -71,7 +71,7 @@ func newContainer() {
 		lib.PrintError("The port is unavailable.", nil)
 	}
 
-	c.SetDockerfile("node")
+	c.SetDockerfile("")
 	c.CreateImage()
 	c.StartImage()
 }

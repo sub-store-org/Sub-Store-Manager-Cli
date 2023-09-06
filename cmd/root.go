@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(versionCmd, lsCmd, newCmd, stopCmd, startCmd, deleteCmd)
+	rootCmd.AddCommand(versionCmd, lsCmd, newCmd, stopCmd, startCmd, deleteCmd, updateCmd)
 }
 
 func getType() (string, string) {
