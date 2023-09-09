@@ -34,7 +34,7 @@ func updateContainer() {
 	}
 
 	c := docker.Container{
-		Name:          inputName,
+		Name:          name,
 		ImageName:     oldContainer.ImageName,
 		ContainerType: oldContainer.ContainerType,
 		HostPort:      oldContainer.HostPort,
