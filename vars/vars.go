@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Version         = "0.0.8"
+	Version         = "0.0.9"
 	DockerNameBE    = "ssm-backend"
 	DockerNameFE    = "ssm-frontend"
 	ContainerTypeFE = "frontend"
