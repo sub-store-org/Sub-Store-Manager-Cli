@@ -10,6 +10,7 @@ import (
 var inputVersion = ""
 var inputName = ""
 var inputPort = ""
+var inputNetwork = ""
 var inputType bool
 
 var rootCmd = &cobra.Command{

@@ -10,6 +10,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/network"
 	"github.com/docker/go-connections/nat"
 	"sub-store-manager-cli/lib"
 	"sub-store-manager-cli/vars"
@@ -132,6 +133,20 @@ func (c *Container) StartImage() {
 		},
 	}
 
+	networkConfig := &network.NetworkingConfig{}
+	if c.Network != "" {
+		_, err := c.GetNetworkID()
+		if err != nil {
+			os.Exit(1)
+		}
+
+		networkConfig = &network.NetworkingConfig{
+			EndpointsConfig: map[string]*network.EndpointSettings{
+				c.Network: {},
+			},
+		}
+	}
+
 	switch c.ContainerType {
 	case vars.ContainerTypeFE:
 		hostConfig.PortBindings = nat.PortMap{
@@ -155,7 +170,7 @@ func (c *Container) StartImage() {
 		}
 	}
 
-	resp, err := dc.ContainerCreate(dcCtx, containerConfig, hostConfig, nil, nil, c.Name)
+	resp, err := dc.ContainerCreate(dcCtx, containerConfig, hostConfig, networkConfig, nil, c.Name)
 	if err != nil {
 		lib.PrintError("Failed to create container: ", err)
 	}

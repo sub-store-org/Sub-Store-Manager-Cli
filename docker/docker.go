@@ -22,6 +22,7 @@ type Container struct {
 	ContainerType   string
 	DockerfileStr   string
 	DockerContainer types.Container
+	Network         string
 }
 
 type PortInfo struct {

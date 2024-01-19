@@ -22,6 +22,7 @@ func init() {
 	newCmd.Flags().StringVarP(&inputName, "name", "n", "", "The container name")
 	newCmd.Flags().StringVarP(&inputPort, "port", "p", "", "The port to expose")
 	newCmd.Flags().BoolVarP(&inputType, "interface", "i", false, "The target type to create a sub-store container")
+	newCmd.Flags().StringVarP(&inputNetwork, "network", "", "", "The docker network to connect")
 }
 
 func newContainer() {
@@ -29,6 +30,7 @@ func newContainer() {
 	c := docker.Container{
 		ImageName:     imageName,
 		ContainerType: imageType,
+		Network:       inputNetwork,
 	}
 
 	// 检查是否已有同名容器
