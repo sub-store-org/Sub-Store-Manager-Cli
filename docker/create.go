@@ -147,12 +147,16 @@ func (c *Container) StartImage() {
 		}
 	}
 
+	hostIP := "0.0.0.0"
+	if c.Private {
+		hostIP = "127.0.0.1"
+	}
 	switch c.ContainerType {
 	case vars.ContainerTypeFE:
 		hostConfig.PortBindings = nat.PortMap{
 			"80/tcp": []nat.PortBinding{
 				{
-					HostIP:   "0.0.0.0",
+					HostIP:   hostIP,
 					HostPort: c.HostPort,
 				},
 			},
@@ -163,7 +167,7 @@ func (c *Container) StartImage() {
 		hostConfig.PortBindings = nat.PortMap{
 			"3000/tcp": []nat.PortBinding{
 				{
-					HostIP:   "0.0.0.0",
+					HostIP:   hostIP,
 					HostPort: c.HostPort,
 				},
 			},

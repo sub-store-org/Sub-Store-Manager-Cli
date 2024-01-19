@@ -12,6 +12,7 @@ var inputName = ""
 var inputPort = ""
 var inputNetwork = ""
 var inputType bool
+var inputPrivate bool
 
 var rootCmd = &cobra.Command{
 	Use:   "ssm",
