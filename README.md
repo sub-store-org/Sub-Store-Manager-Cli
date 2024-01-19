@@ -39,6 +39,9 @@ this command support the following flags:
 
 - `--port` or `-p` : To successfully create a new Docker container, you need to specify the port mapping. The default port is `3000`, and it must be available. If you pass `-i` to create a front-end container, the default port will be `80`. If you want to access the container using a domain name, you will need to manually proxy this port with a reverse proxy tool such as Nginx or Caddy.
 
+- `--network` : Specify a docker network, which has the same effect as `--network` in `docker run`. If not specified, use Host mode. If specified, use Bridge mode. If the network exists, join it; if not, create it and then join.
+
+- `--private` : Switch the HostIP of the container to `127.0.0.1`, if not specified, use the default `0.0.0.0`.
 
 ### update
 
